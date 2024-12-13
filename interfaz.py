@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from simulacion import ejecutar_simulacion
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,7 +15,7 @@ class Interfaz:
         master.title("Simulación N Reinas")
 
         # Etiqueta y campo para ingresar el tamaño del tablero
-        self.label = tk.Label(master, text="Ingrese el tamaño del tablero (n):")
+        self.label = tk.Label(master, text="Ingrese el tamaño del tablero (4, 5, 6, 8, 10, 12 o 15):")
         self.label.pack()
 
         self.entry = tk.Entry(master)
@@ -39,9 +40,21 @@ class Interfaz:
         """
         Inicia la simulación basada en los valores ingresados por el usuario.
         """
-        # Leer valores ingresados por el usuario
-        n = int(self.entry.get()) # Tamaño del tablero
-        escenario = int(self.entry_escenario.get()) # Escenario a simular
+        try:
+            n = int(self.entry.get())
+            if n not in [4, 5, 6, 8, 10, 12, 15]:
+                raise ValueError("Tamaño del tablero no válido")
+        except ValueError as e:
+            messagebox.showerror("Error", str(e))
+            return
+
+        try:
+            escenario = int(self.entry_escenario.get())
+            if escenario not in [1, 2, 3]:
+                raise ValueError("Escenario no válido")
+        except ValueError as e:
+            messagebox.showerror("Error", str(e))
+            return
         print(f"Se iniciará la simulación con n = {n} y escenario = {escenario}")
 
         # Ejecutar la simulación y capturar tiempos de robot y humano
