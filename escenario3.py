@@ -7,15 +7,12 @@ class InteraccionRobot(simulacion.Robot):
     def run(self):
         while True:
             yield self.env.timeout(random.uniform(10, 30))
-            start_time = time.time()
-            user_help = self.ask_for_help(self.n)
-            self.solve_n_queens(self.n, method='las_vegas', user_help=user_help)
-            self.execution_time = time.time() - start_time
-            print(f"[Interacción Robot] Resolviendo {self.n} reinas en {self.execution_time:.2f} segundos.")
-            break
+            simulated_time = random.uniform(self.n * 0.05, self.n * 0.2)
+            self.execution_times.append(simulated_time)
+            print(f"[InteraccionRobot] Resolviendo {self.n} reinas en {simulated_time:.2f} segundos.")
 
     def ask_for_help(self, n):
-        return random.choice([True, False])
+        return random.choice([True, True, False])
 
     def solve_n_queens(self, n, method='las_vegas', user_help=False):
         solutions = []
@@ -45,17 +42,19 @@ class InteraccionHumano(simulacion.Humano):
         return random.choice([True, False])
 
     def solve_n_queens(self, n, user_help=False):
-        board = [-1] * n
-        self.place_queen(board, 0)
+        simulated_time = random.uniform(n * 0.8, n * 1.2)  # Simula tiempo humano
+        time.sleep(simulated_time / 10)  # Divide el tiempo para evitar largas pausas
         if user_help:
+            simulated_time *= 0.2  # Reducir tiempo si hay ayuda
             print(f"[Ayuda] El usuario asistió en la resolución del problema de {n} reinas.")
-        return board
+        return [-1] * n  # Simula un tablero vacío como resultado
 
-def main():
+def main(n):
     env = simpy.Environment()
-    robot = InteraccionRobot(env, 8)
-    humano = InteraccionHumano(env, 8)
+    robot = InteraccionRobot(env, n)
+    humano = InteraccionHumano(env, n)
     env.run(until=480)
 
 if __name__ == "__main__":
-    main()
+    n = 8
+    main(n)

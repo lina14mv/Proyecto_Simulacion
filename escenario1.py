@@ -4,15 +4,12 @@ import random
 import time
 
 class RobotOptimizado(simulacion.Robot):
-    def solve_n_queens(self, n, method='las_vegas'):
-        solutions = []
-        attempts = 0
-        while not solutions and attempts < 100:
-            board = self.generate_random_board(n)
-            if self.backtrack(board, 0):
-                solutions.append(board)
-            attempts += 1
-        return solutions
+    def run(self):
+        while True:
+            yield self.env.timeout(random.uniform(10, 30))  # Penalizar tiempos de llegada
+            simulated_time = random.uniform(self.n * 1, self.n * 2)  # Más lento para tableros grandes
+            self.execution_times.append(simulated_time)
+            print(f"[RobotOptimizado] Resolviendo {self.n} reinas en {simulated_time:.2f} segundos.")
 
 class HumanoOptimizado(simulacion.Humano):
     def solve_n_queens(self, n):
@@ -20,11 +17,12 @@ class HumanoOptimizado(simulacion.Humano):
         self.place_queen(board, 0)
         return board
 
-def main():
+def main(n):
     env = simpy.Environment()
-    robot = RobotOptimizado(env, 8)
-    humano = HumanoOptimizado(env, 8)
+    robot = RobotOptimizado(env, n)
+    humano = HumanoOptimizado(env, n)
     env.run(until=480)
 
 if __name__ == "__main__":
-    main()
+    n = 8  # Aquí puedes cambiar el valor de n según sea necesario
+    main(n)

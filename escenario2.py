@@ -1,42 +1,75 @@
-import simulacion
 import simpy
 import random
-import time
 
-class RobotBonificado(simulacion.Robot):
+class RobotBonificado:
+    def __init__(self, env, n):
+        self.env = env
+        self.n = n
+        self.execution_times = []
+        self.total_bonus = 0
+        env.process(self.run())
+
+    def solve_n_queens(self, n, method='las_vegas'):
+        simulated_time = random.uniform(n * 0.6, n * 0.9)
+        return simulated_time
+
     def run(self):
-        total_bonus = 0
         while True:
+            # Simula un tiempo entre intentos
             yield self.env.timeout(random.uniform(10, 30))
-            start_time = time.time()
-            self.solve_n_queens(self.n, method='las_vegas')
-            self.execution_time = time.time() - start_time
-            
-            if self.execution_time < 5:
-                bonus = 10
-                total_bonus += bonus
-                print(f"[Robot Bonificado] Resolviendo {self.n} reinas en {self.execution_time:.2f} segundos. Bonificación total: {total_bonus}")
-            break
+            start_time = self.env.now
+            execution_time = self.solve_n_queens(self.n)
+            yield self.env.timeout(execution_time)  # Simula el tiempo real
+            self.execution_times.append(execution_time)
 
-class HumanoBonificado(simulacion.Humano):
+            # Bonificación si es rápido
+            if execution_time < 5:
+                bonus = 10
+                self.total_bonus += bonus
+
+            print(
+                f"[Robot Bonificado] Resolviendo {self.n} reinas en {execution_time:.2f} segundos. Bonificación total: {self.total_bonus}"
+            )
+
+class HumanoOptimizado:
+    def __init__(self, env, n):
+        self.env = env
+        self.n = n
+        self.execution_times = []
+        env.process(self.run())
+
+    def solve_n_queens(self, n, user_help=False):
+        base_time = random.uniform(n * 0.5, n * 0.8)
+        if user_help:
+            base_time *= 0.5  # Reducir tiempo si hay ayuda
+        return base_time
+
+    def ask_for_help(self, n):
+        # 70% de probabilidades de recibir ayuda
+        return random.random() < 0.7
+
     def run(self):
-        total_bonus = 0
         while True:
-            yield self.env.timeout(random.uniform(10, 30))
-            start_time = time.time()
-            self.solve_n_queens(self.n)
-            self.execution_time = time.time() - start_time
-            self.execution_times.append(self.execution_time)
-            if self.execution_time < 5:
-                bonus = 10
-                total_bonus += bonus
-                print(f"[Humano Bonificado] Resolviendo {self.n} reinas en {self.execution_time:.2f} segundos. Bonificación total: {total_bonus}")
+            # Simula un tiempo entre intentos
+            yield self.env.timeout(random.uniform(10, 20))
+            start_time = self.env.now
+            user_help = self.ask_for_help(self.n)
+            execution_time = self.solve_n_queens(self.n, user_help)
+            yield self.env.timeout(execution_time)  # Simula el tiempo real
+            self.execution_times.append(execution_time)
 
-def main():
+            if user_help:
+                print(f"[Ayuda] El usuario asistió en la resolución del problema de {self.n} reinas.")
+            print(
+                f"[Humano Optimizado] Resolviendo {self.n} reinas en {execution_time:.2f} segundos."
+            )
+
+def main(n):
     env = simpy.Environment()
-    robot = RobotBonificado(env, 8)
-    humano = HumanoBonificado(env, 8)
-    env.run(until=480)
+    robot = RobotBonificado(env, n)
+    humano = HumanoOptimizado(env, n)
+    env.run(until=480)  # Simula 480 unidades de tiempo
 
 if __name__ == "__main__":
-    main()
+    n = 8  # Valor de las n reinas
+    main(n)

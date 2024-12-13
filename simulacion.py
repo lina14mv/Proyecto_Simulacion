@@ -12,12 +12,14 @@ class Robot:
 
     def run(self):
         while True:
-            yield self.env.timeout(random.uniform(10, 30))
+            yield self.env.timeout(random.uniform(10, 30))  # Llegada del robot
             start_time = time.time()
             self.solve_n_queens(self.n, method='las_vegas')
             execution_time = time.time() - start_time
-            self.execution_times.append(execution_time)
-            print(f"[Robot] Resolviendo {self.n} reinas en {execution_time:.2f} segundos.")
+            # Simular tiempo basado en complejidad
+            simulated_time = random.uniform(self.n * 1.5, self.n * 2.5)
+            self.execution_times.append(simulated_time)
+            print(f"[Robot] Resolviendo {self.n} reinas en {simulated_time:.2f} segundos.")
 
     def solve_n_queens(self, n, method='las_vegas'):
         solutions = []
@@ -59,12 +61,14 @@ class Humano:
 
     def run(self):
         while True:
-            yield self.env.timeout(random.uniform(10, 30))
+            yield self.env.timeout(random.uniform(10, 30))  # Tiempo entre intentos
             start_time = time.time()
             self.solve_n_queens(self.n)
             execution_time = time.time() - start_time
-            self.execution_times.append(execution_time)
-            print(f"[Humano] Resolviendo {self.n} reinas en {execution_time:.2f} segundos.")
+            # Simular tiempo basado en complejidad determinista
+            simulated_time = random.uniform(self.n, self.n * 1.5)
+            self.execution_times.append(simulated_time)
+            print(f"[Humano] Resolviendo {self.n} reinas en {simulated_time:.2f} segundos.")
 
     def solve_n_queens(self, n):
         board = [-1] * n
@@ -96,7 +100,7 @@ def ejecutar_simulacion(n, escenario):
         from escenario1 import HumanoOptimizado as Humano
     elif escenario == 2:
         from escenario2 import RobotBonificado as Robot
-        from escenario2 import HumanoBonificado as Humano
+        from escenario2 import HumanoOptimizado as Humano
     elif escenario == 3:
         from escenario3 import InteraccionRobot as Robot
         from escenario3 import InteraccionHumano as Humano
@@ -109,5 +113,7 @@ def ejecutar_simulacion(n, escenario):
 
     robot_times = robot.execution_times
     humano_times = humano.execution_times
+    
+    print (f"Tiempo total simulado: {env.now} minutos")
 
     return robot_times, humano_times
