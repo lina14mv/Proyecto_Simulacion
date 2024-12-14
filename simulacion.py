@@ -166,12 +166,12 @@ def ejecutar_simulacion(n, escenario):
     # Crea instancias de Robot y Humano
     robot = Robot(env, n)
     humano = Humano(env, n)
-    env.run(until=480)  # 8 horas en minutos
+    env.run(until=28800)  # 8 horas en segundos
 
     # Obtiene los tiempos de ejecución de ambos
     robot_times = robot.execution_times
     humano_times = humano.execution_times
     
-    print (f"Tiempo total simulado: {env.now} minutos")
+    print (f"Tiempo total simulado: {env.now} segundos")
 
     return robot_times, humano_times

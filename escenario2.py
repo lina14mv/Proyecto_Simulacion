@@ -73,7 +73,7 @@ def main(n):
     env = simpy.Environment()
     robot = RobotBonificado(env, n)
     humano = HumanoOptimizado(env, n)
-    env.run(until=480)  # Simula 480 unidades de tiempo
+    env.run(until=28800)  # Simula 28800 unidades de tiempo
 
 if __name__ == "__main__":
     n = 8  # Valor de las n reinas

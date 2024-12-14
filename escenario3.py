@@ -93,12 +93,12 @@ class InteraccionHumano(simulacion.Humano):
 def main(n):
     """
     Configura el entorno de simulación y ejecuta las interacciones
-    entre el robot y el humano durante 480 unidades de tiempo.
+    entre el robot y el humano durante 28800 unidades de tiempo.
     """
     env = simpy.Environment()
     robot = InteraccionRobot(env, n)
     humano = InteraccionHumano(env, n)
-    env.run(until=480)
+    env.run(until=28800)
 
 if __name__ == "__main__":
     n = 8

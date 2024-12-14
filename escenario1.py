@@ -37,7 +37,7 @@ class HumanoOptimizado(simulacion.Humano):
 def main(n):
     """
     Configura y ejecuta la simulación utilizando SimPy.
-    Crea instancias de RobotOptimizado y HumanoOptimizado y las simula durante 480 unidades de tiempo.
+    Crea instancias de RobotOptimizado y HumanoOptimizado y las simula durante 28800 unidades de tiempo.
     """
     # Crea un entorno de simulación de SimPy
     env = simpy.Environment()
@@ -45,8 +45,8 @@ def main(n):
     robot = RobotOptimizado(env, n)
     # Instancia un humano optimizado para el tamaño del tablero dado (n)
     humano = HumanoOptimizado(env, n)
-    # Ejecuta la simulación hasta que se agoten los 480 minutos
-    env.run(until=480)
+    # Ejecuta la simulación hasta que se agoten las 8 horas (28800 segundos)
+    env.run(until=28800)
 
 if __name__ == "__main__":
     # Tamaño predeterminado del tablero (n)
